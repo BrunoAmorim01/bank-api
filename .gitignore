@@ -1,0 +1,64 @@
+# Compiled files
+*.dll
+*.exe
+*.pdb
+
+# NuGet packages
+*.nupkg
+
+# User-specific files
+*.user
+*.suo
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio files
+.vs/
+*_i.c
+*_p.c
+*.ncb
+*.suo
+*.tlb
+*.tlh
+*.bak
+*.cache
+*.ilk
+*.log
+*.lib
+*.sbr
+*.sdf
+*.opensdf
+*.sln.docstates
+*.cachefile
+*.vcxproj.filters
+*.vcproj.*
+*.vcxproj.*
+*.swp
+*.user
+*.psess
+*.vsp
+*.vspx
+*.vsps
+*.vssscc
+*.vsscc
+*.vssettings
+*.vsmdi
+*.vsmacros
+*.vspscc
+*.vssscc
+*.vsix
+*.vsixmanifest
+*.vsmdi
+*.vssscc
+*.vstemplate
+appsettings.Development.json
