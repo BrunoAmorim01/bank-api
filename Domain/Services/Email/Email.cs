@@ -9,5 +9,5 @@ public class MailRequest
 
 public interface IEMailService
 {
-    Task SendEmailAsync(MailRequest mailRequest);
+    Task SendBasicEmail(MailRequest mailRequest);
 }

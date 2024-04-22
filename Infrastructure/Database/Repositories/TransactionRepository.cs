@@ -37,14 +37,22 @@ public class TransactionRepository(PostgressDbContext dbContext) : ITransactionR
 
     public async Task<TransactionModel?> GetById(Guid transactionId)
     {
-        var transaction = await dbContext.Transactions.Select(x => new TransactionModel
+        var transaction = await dbContext.Transactions
+        .Include(x => x.UserDestination)
+        .Select(x => new TransactionModel
         {
             Id = x.Id,
             UserDestinationId = x.UserDestinationId,
             BankDestinationId = x.BankDestinationId,
             TransactionStatus = x.TransactionStatus,
             TransactionType = x.TransactionType,
-            Value = x.Value
+            Value = x.Value,
+            UserDestination = new User
+            {
+                Id = x.UserDestination.Id,
+                Name = x.UserDestination.Name,
+                Email = x.UserDestination.Email
+            }
 
         }).FirstOrDefaultAsync(x => x.Id == transactionId);
 
@@ -61,15 +69,20 @@ public class TransactionRepository(PostgressDbContext dbContext) : ITransactionR
             BankDestinationId = transaction.BankDestinationId,
             TransactionStatus = transaction.TransactionStatus,
             TransactionType = transaction.TransactionType,
-            Value = transaction.Value
+            Value = transaction.Value,
+            UserDestination = new User
+            {
+                Id = transaction.UserDestination.Id,
+                Name = transaction.UserDestination.Name,
+                Email = transaction.UserDestination.Email
+            }
         };
-
 
         return transactionModel;
     }
 
     public async Task Update(UpdateDeposit data)
     {
-        await dbContext.Transactions.Where(x => x.Id == data.Id).ExecuteUpdateAsync(x => x.SetProperty (p => p.TransactionStatus, data.TransactionStatus));
+        await dbContext.Transactions.Where(x => x.Id == data.Id).ExecuteUpdateAsync(x => x.SetProperty(p => p.TransactionStatus, data.TransactionStatus));
     }
 }

@@ -13,6 +13,6 @@ public class SendWelcomeEmailUseCase(IEMailService emailService)
             Body =  $"Welcome {name}! Your bank account number is {accountNumber}-{accountDigit}"
         };
 
-        await emailService.SendEmailAsync(mailRequest);
+        await emailService.SendBasicEmail(mailRequest);
     }
 }

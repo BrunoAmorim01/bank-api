@@ -1,17 +1,22 @@
-﻿using api.Domain.Enums;
+﻿using api.Application.Emails;
+using api.Domain.Enums;
 using api.Domain.Repositories;
+using api.Domain.Services;
 
 namespace api.Application.Transactions;
 
-public class ProccessDepositUseCase(ILogger<ProccessDepositUseCase> logger, ITransactionRepository transactionRepository, IBankRepository bankRepository)
+public class ProccessDepositUseCase(
+    ILogger<ProccessDepositUseCase> logger,
+    ITransactionRepository transactionRepository,
+    IBankRepository bankRepository,
+    SendCompletedDepositEmailUseCase sendCompletedDepositEmailUseCase
+    )
 {
     public async Task Execute(Guid transactionId)
     {
         logger.LogInformation("Processing deposit");
 
         var transaction = await transactionRepository.GetById(transactionId);
-        Console.WriteLine("Transaction: ");
-        Console.WriteLine(transaction.TransactionStatus);
 
         if (transaction?.TransactionStatus != TransactionStatusEnum.Pending || transaction is null)
         {
@@ -40,6 +45,9 @@ public class ProccessDepositUseCase(ILogger<ProccessDepositUseCase> logger, ITra
         };
 
         await bankRepository.Update(bankUpdate);
+
+        logger.LogInformation("Sending email");
+        await sendCompletedDepositEmailUseCase.Execute(transaction.UserDestination.Email, transaction.UserDestination.Name, transaction.Value);
 
         logger.LogInformation("Deposit processed");
 

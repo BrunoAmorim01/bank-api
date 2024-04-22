@@ -24,7 +24,7 @@ public class SesService : IEMailService
     }
 
 
-    public async Task SendEmailAsync(MailRequest mailRequest)
+    public async Task SendBasicEmail(MailRequest mailRequest)
     {
         var mailBody = new Body(new Content(mailRequest.Body));
         var message = new Message(new Content(mailRequest.Subject), mailBody);
