@@ -21,6 +21,7 @@ using Microsoft.IdentityModel.Tokens;
 using api.Application.Transactions;
 using api.Infrastructure.Queues;
 using api.Infrastructure.AWS;
+using api.Infrastructure.Database;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,6 +36,7 @@ builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 builder.Services.Configure<AwsSettings>(builder.Configuration.GetSection("AWS"));
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
+builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("Database"));
 
 builder.Services.AddValidatorsFromAssemblyContaining<UserValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<AuthValidador>();

@@ -1,21 +1,26 @@
-﻿using api.Infrastructure.Database.Entities;
+﻿using api.Infrastructure.Database;
+using api.Infrastructure.Database.Entities;
 using api.Infrastructure.Database.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace api.Infrastructure;
 
-public class PostgressDbContext : DbContext
+public class PostgressDbContext(ILogger<PostgressDbContext> logger, IOptions<DatabaseSettings> databaseSettings) : DbContext
 {
     public DbSet<User> Users { get; set; }
     public DbSet<Bank> Banks { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
+    private readonly DatabaseSettings _databaseSettings = databaseSettings.Value;
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
         var builder = new ConfigurationBuilder()
            .AddJsonFile($"appsettings.{environmentName}.json", optional: true);
         var configuration = builder.Build();
-        optionsBuilder.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
+        logger.LogInformation($"Using connection default: {_databaseSettings.Default}");
+        
+        optionsBuilder.UseNpgsql(_databaseSettings.Default);
 
     }
 
@@ -25,11 +30,6 @@ public class PostgressDbContext : DbContext
             .HasOne(t => t.UserDestination)
             .WithMany(b => b.TransactionsDestination)
             .HasForeignKey(t => t.UserDestinationId);
-
-
-
-
-
         base.OnModelCreating(modelBuilder);
 
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
