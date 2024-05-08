@@ -24,7 +24,7 @@ public class GetUserByIdUseCase(IUserRepository userRepository)
             Id = user.Id,
             Email = user.Email,
             Name = user.Name,
-            Balance = user.Bank.Balance
+            Balance = user.Bank.Balance / 100m // Convert to decimal
         };
     }
 }
