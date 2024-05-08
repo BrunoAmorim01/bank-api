@@ -20,7 +20,8 @@ public class ProccessDepositUseCase(
 
         if (transaction?.TransactionStatus != TransactionStatusEnum.Pending || transaction is null)
         {
-            throw new Exception("Transaction is not pending");
+            logger.LogInformation("Transaction is not pending");
+            return;
         }
         logger.LogInformation("Updating transaction status");
         var updateDeposit = new UpdateDeposit
@@ -41,7 +42,8 @@ public class ProccessDepositUseCase(
         var bankUpdate = new UpdateBank
         {
             Id = transaction.BankDestinationId,
-            Balance = transaction.Value + bank.Balance
+            //Balance = transaction.Value + bank.Balance
+            Balance = transaction.Value
         };
 
         await bankRepository.Update(bankUpdate);
