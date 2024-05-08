@@ -3,7 +3,7 @@ using api.Domain.Services;
 
 namespace api.Application.Emails;
 
-public class SendCompletedDepositEmailUseCase(IEMailService emailService)
+public class SendCompletedDepositEmailUseCase(IEMailService emailService, ILogger<SendCompletedDepositEmailUseCase> logger)
 {
     public async Task Execute(string email, string name, int value)
     {
@@ -16,7 +16,17 @@ public class SendCompletedDepositEmailUseCase(IEMailService emailService)
             Subject = "Processed deposit",
             Body = $"Hello {name}! Your deposit of {valueInBRL} was processed successfully. "
         };
+        try
+        {
 
-        await emailService.SendBasicEmail(mailRequest);
+            await emailService.SendBasicEmail(mailRequest);
+        }
+        catch (Exception e)
+        {
+            logger.LogError("Error sending email");
+            logger.LogError(e.Message);
+
+        }
+
     }
 }
