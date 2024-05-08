@@ -28,6 +28,7 @@ public class BankRepository(PostgressDbContext dbContext) : IBankRepository
 
     public async Task Update(UpdateBank data)
     {
-        await dbContext.Banks.Where(x => x.Id == data.Id).ExecuteUpdateAsync(x => x.SetProperty(p => p.Balance, data.Balance));
+        await dbContext.Database.ExecuteSqlRawAsync("UPDATE Banks SET Balance = Balance + {0} WHERE Id = {1}", data.Balance, data.Id);
+
     }
 }
