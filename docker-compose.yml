@@ -9,10 +9,3 @@ services:
     env_file:
       - path: .env
         required: false
-    networks:
-      - api-network
-
-networks:
-  api-network:
-    driver: host
-         

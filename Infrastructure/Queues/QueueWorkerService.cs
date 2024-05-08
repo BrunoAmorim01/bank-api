@@ -45,7 +45,7 @@ namespace api.Infrastructure.Queues
                     }
                     else
                     {
-                        LogInformation($"No messages found. Waiting {WaitDelayWhenNoMessages} seconds");
+                       // LogInformation($"No messages found. Waiting {WaitDelayWhenNoMessages} seconds");
                         await Task.Delay(WaitDelayWhenNoMessages * 1000, stoppingToken);
                     }
 
