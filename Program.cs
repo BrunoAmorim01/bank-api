@@ -32,7 +32,6 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
     serverOptions.Listen(IPAddress.Any, int.Parse(builder.Configuration.GetSection("Port").Value));
 });
 
-
 builder.Services.AddControllers();
 builder.Services.AddCors();
 builder.Services.AddEndpointsApiExplorer();
