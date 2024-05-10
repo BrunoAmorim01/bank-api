@@ -22,9 +22,16 @@ using api.Application.Transactions;
 using api.Infrastructure.Queues;
 using api.Infrastructure.AWS;
 using api.Infrastructure.Database;
+using System.Net;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.Listen(IPAddress.Any, int.Parse(builder.Configuration.GetSection("Port").Value));
+});
+
 
 builder.Services.AddControllers();
 builder.Services.AddCors();
@@ -128,3 +135,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+
