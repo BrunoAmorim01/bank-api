@@ -100,23 +100,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 return Task.CompletedTask;
 
             },
-            // OnTokenValidated = context =>
-            // {
-            //     Console.WriteLine("OnTokenValidated: " + context.SecurityToken);
-            //     JsonWebToken? token = context.SecurityToken as JsonWebToken;
-            //     return Task.CompletedTask;
-            // },
-            // OnChallenge = context =>
-            // {
-            //     Console.WriteLine("OnChallenge: " + context.Error);
-            //     return Task.CompletedTask;
-            // }
-
         };
-
-
     });
-
 
 var app = builder.Build();
 
