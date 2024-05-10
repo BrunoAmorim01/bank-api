@@ -21,7 +21,13 @@ public class TransactionsController(IValidator<DepositDto> validator, CreateDepo
         await new Validator<DepositDto>().Validate(body, validator);
         var userIdClaim = User.Claims.First(c => c.Type == ClaimTypes.UserData);
         var response = await createDepositUseCase.Execute(new Guid(userIdClaim.Value), body.Amount);
-        return Created(string.Empty,response);
+        return Created(string.Empty, response);
+    }
 
+    [HttpPost]
+    [Route("transfer")]
+    public async Task<IActionResult> Transfer([FromBody] TransferDto body)
+    {
+        return Ok();
     }
 }
