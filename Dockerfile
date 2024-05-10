@@ -14,6 +14,4 @@ WORKDIR /App
 COPY --from=build-env /App/out .
 ENV ASPDOTNET_ENVIRONMENT=Development
 
-EXPOSE 8080
-
 ENTRYPOINT ["dotnet", "api.dll"]
