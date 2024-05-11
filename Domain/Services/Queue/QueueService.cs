@@ -7,13 +7,10 @@ public class QueueMessage
 }
 public interface IQueueService
 {
-    Task<string> GetQueueUrlAsync(string queueName);
-
+    Task<string> GetQueueUrlAsync(string queueName, bool isFifo);
     Task<bool> PublishToQueueAsync(string queueUrl, string message, string? messageGroupId);
-
     Task<bool> PublishDepositAsync(string message, string? messageGroupId);
-
+    Task<bool> PublishTransferAsync(string message, string? messageGroupId);
     Task<List<QueueMessage>> ReceiveMessageAsync(string queueUrl, int maxMessages = 1);
-
     Task DeleteMessageAsync(string queueUrl, string id);
 }

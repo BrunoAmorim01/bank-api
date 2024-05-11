@@ -8,6 +8,7 @@ namespace api.Infrastructure.Queues
         private readonly ILogger<QueueWorkerService> _logger = logger;
 
         protected string QueueName { get; set; } = default!;
+        protected bool IsFifo { get; set; }
         protected int MaxMessages { get; set; } = 10;
         protected int WaitDelayWhenNoMessages { get; set; } = 10;
 
@@ -16,7 +17,7 @@ namespace api.Infrastructure.Queues
             using var scope = _serviceProvider.CreateScope();
             var queueService = scope.ServiceProvider.GetRequiredService<IQueueService>();
 
-            var queueUrl = await queueService.GetQueueUrlAsync(QueueName);
+            var queueUrl = await queueService.GetQueueUrlAsync(QueueName, IsFifo);
 
             LogInformation($"Starting polling queue : {QueueName}");
 
@@ -45,7 +46,7 @@ namespace api.Infrastructure.Queues
                     }
                     else
                     {
-                       // LogInformation($"No messages found. Waiting {WaitDelayWhenNoMessages} seconds");
+                        // LogInformation($"No messages found. Waiting {WaitDelayWhenNoMessages} seconds");
                         await Task.Delay(WaitDelayWhenNoMessages * 1000, stoppingToken);
                     }
 
