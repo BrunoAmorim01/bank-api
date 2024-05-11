@@ -13,6 +13,7 @@ public class SqsService : IQueueService
     private readonly AwsSettings _awsSettings;
 
     private readonly string _queueDepositName;
+    private readonly string _queueTransferName;
 
     public SqsService(IOptions<AwsSettings> awsSettings)
     {
@@ -21,9 +22,10 @@ public class SqsService : IQueueService
         var config = new BasicAWSCredentials(_awsSettings.AwsAccessKeyId, _awsSettings.AwsSecretAccessKey);
         _amazonSqs = new AmazonSQSClient(config, RegionEndpoint.GetBySystemName(_awsSettings.Region));
         _queueDepositName = _awsSettings.QueueDepositName;
+        _queueTransferName = _awsSettings.QueueTransferName;
     }
 
-    public async Task<string> GetQueueUrlAsync(string queueName)
+    public async Task<string> GetQueueUrlAsync(string queueName, bool isFifo = false)
     {
         try
         {
@@ -36,13 +38,24 @@ public class SqsService : IQueueService
         }
         catch (QueueDoesNotExistException)
         {
-            //You might want to add additionale exception handling here because that may fail
-            var response = await _amazonSqs.CreateQueueAsync(new CreateQueueRequest
+            var createRequest = new CreateQueueRequest
             {
-                QueueName = queueName
-            });
+                QueueName = queueName,               
+            };
+
+            if (isFifo)
+            {
+                createRequest.Attributes.Add("FifoQueue", "true");
+                createRequest.Attributes.Add("ContentBasedDeduplication", "true");
+            }
+            
+            var response = await _amazonSqs.CreateQueueAsync(createRequest);
 
             return response.QueueUrl;
+        }
+        catch (Exception e)
+        {
+            throw new Exception($"Error getting queue url: {e.Message}");
         }
     }
 
@@ -73,7 +86,7 @@ public class SqsService : IQueueService
         {
             MessageId = m.MessageId,
             Body = m.Body,
-            Handle = m.ReceiptHandle,            
+            Handle = m.ReceiptHandle,
         }).ToList();
     }
 
@@ -89,6 +102,11 @@ public class SqsService : IQueueService
     public Task<bool> PublishDepositAsync(string message, string? messageGroupId)
     {
         return PublishToQueueAsync(_queueDepositName, message, messageGroupId);
+    }
+
+    public Task<bool> PublishTransferAsync(string message, string? messageGroupId)
+    {
+        return PublishToQueueAsync(_queueTransferName, message, messageGroupId);
     }
 }
 
