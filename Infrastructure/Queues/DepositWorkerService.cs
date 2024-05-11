@@ -16,12 +16,12 @@ public class ResponseDeserialize
 
 }
 
-public class DepositbWorkerService : QueueWorkerService
+public class DepositWorkerService : QueueWorkerService
 {
     private readonly AwsSettings _awsSettings;
     private readonly ILogger<QueueWorkerService> _logger;
     private readonly IServiceProvider _serviceProvider;
-    public DepositbWorkerService(
+    public DepositWorkerService(
         IServiceProvider serviceProvider,
         ILogger<QueueWorkerService> logger,
         IOptions<AwsSettings> awsSettings
@@ -30,6 +30,7 @@ public class DepositbWorkerService : QueueWorkerService
     {
         _awsSettings = awsSettings.Value;
         QueueName = _awsSettings.QueueDepositName;
+        IsFifo = true;
         _logger = logger;
         _serviceProvider = serviceProvider;
 
