@@ -63,7 +63,8 @@ public class SqsService : IQueueService
         var request = new ReceiveMessageRequest
         {
             QueueUrl = queueUrl,
-            MaxNumberOfMessages = maxMessages
+            MaxNumberOfMessages = maxMessages,
+            WaitTimeSeconds = 5
         };
 
         var messages = await _amazonSqs.ReceiveMessageAsync(request);
