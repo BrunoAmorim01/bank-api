@@ -12,7 +12,8 @@ public class UpdateBank
 public interface IBankRepository
 {
     Task<Bank> Create(Guid userId, string AccountNumber, string AccountDigit);
-    Task Update(UpdateBank data);
+    Task IncrementBalance(UpdateBank data);
+    Task DecrementBalance(UpdateBank data);
     Task<Bank> GetById(Guid bankId);
 }
 

@@ -21,12 +21,17 @@ public class BankRepository(PostgressDbContext dbContext) : IBankRepository
         return bankTocreate.Entity;
     }
 
+    public async Task DecrementBalance(UpdateBank data)
+    {
+        await dbContext.Database.ExecuteSqlRawAsync("UPDATE Banks SET Balance = Balance - {0} WHERE Id = {1}", data.Balance, data.Id);
+    }
+
     public async Task<Bank> GetById(Guid bankId)
     {
         return await dbContext.Banks.FirstAsync(x => x.Id == bankId);
     }
 
-    public async Task Update(UpdateBank data)
+    public async Task IncrementBalance(UpdateBank data)
     {
         await dbContext.Database.ExecuteSqlRawAsync("UPDATE Banks SET Balance = Balance + {0} WHERE Id = {1}", data.Balance, data.Id);
 
