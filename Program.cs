@@ -47,6 +47,7 @@ builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("D
 builder.Services.AddValidatorsFromAssemblyContaining<UserValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<AuthValidador>();
 builder.Services.AddValidatorsFromAssemblyContaining<DepositValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<TransferValidator>();
 
 builder.Services.AddMvc(options => options.Filters.Add(typeof(ExceptionFilter)));
 
@@ -60,6 +61,7 @@ builder.Services.AddScoped<LoginUserUseCase>();
 builder.Services.AddScoped<GetUserByIdUseCase>();
 builder.Services.AddScoped<CreateDepositUseCase>();
 builder.Services.AddScoped<ProccessDepositUseCase>();
+builder.Services.AddScoped<CreateTransferUseCase>();
 
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
