@@ -59,11 +59,14 @@ builder.Services.AddScoped<RegisterUserUseCase>();
 builder.Services.AddScoped<CreateBankAccountUseCase>();
 builder.Services.AddScoped<SendWelcomeEmailUseCase>();
 builder.Services.AddScoped<SendCompletedDepositEmailUseCase>();
+builder.Services.AddScoped<SendCompletedTransferDestinationEmailUseCase>();
+builder.Services.AddScoped<SendCompletedTransferOriginEmailUseCase>();
 builder.Services.AddScoped<LoginUserUseCase>();
 builder.Services.AddScoped<GetUserByIdUseCase>();
 builder.Services.AddScoped<CreateDepositUseCase>();
 builder.Services.AddScoped<ProccessDepositUseCase>();
 builder.Services.AddScoped<CreateTransferUseCase>();
+builder.Services.AddScoped<ProccessTransferUseCase>();
 
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -78,7 +81,8 @@ builder.Services.AddScoped<IQueueService, SqsService>();
 
 
 builder.Services.AddLogging(builder => builder.AddConsole());
-builder.Services.AddHostedService<DepositbWorkerService>();
+builder.Services.AddHostedService<DepositWorkerService>();
+builder.Services.AddHostedService<TransferWorkerService>();
 
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
