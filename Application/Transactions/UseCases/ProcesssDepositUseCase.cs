@@ -1,7 +1,6 @@
 ﻿using api.Application.Emails;
 using api.Domain.Enums;
 using api.Domain.Repositories;
-using api.Domain.Services;
 
 namespace api.Application.Transactions;
 
@@ -24,7 +23,7 @@ public class ProccessDepositUseCase(
             return;
         }
         logger.LogInformation("Updating transaction status");
-        var updateDeposit = new UpdateDeposit
+        var updateDeposit = new UpdateTransaction
         {
             Id = transactionId,
             TransactionStatus = TransactionStatusEnum.Completed
@@ -42,11 +41,10 @@ public class ProccessDepositUseCase(
         var bankUpdate = new UpdateBank
         {
             Id = transaction.BankDestinationId,
-            //Balance = transaction.Value + bank.Balance
             Balance = transaction.Value
         };
 
-        await bankRepository.Update(bankUpdate);
+        await bankRepository.IncrementBalance(bankUpdate);
 
         logger.LogInformation("Sending email");
         await sendCompletedDepositEmailUseCase.Execute(transaction.UserDestination.Email, transaction.UserDestination.Name, transaction.Value);
