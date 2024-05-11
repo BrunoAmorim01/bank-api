@@ -28,7 +28,7 @@ public class SesService : IEMailService
     {
         var mailBody = new Body(new Content(mailRequest.Body));
         var message = new Message(new Content(mailRequest.Subject), mailBody);
-        var destination = new Destination([mailRequest.ToEmail!]);
+        var destination = new Destination([mailRequest.ToEmail]);
         var request = new SendEmailRequest(_mailSettings.Mail, destination, message);
         await _mailService.SendEmailAsync(request);
     }
