@@ -1,4 +1,5 @@
-﻿using api.Domain.Enums;
+﻿using System.Text.Json;
+using api.Domain.Enums;
 using api.Domain.Repositories;
 using api.Domain.Services;
 using api.Shared.Exceptions;
@@ -60,10 +61,17 @@ public class CreateTransferUseCase(
 
         var createdTransaction = await transactionRepository.Create(transaction);
 
-        return new Response
+
+         var response = new Response
         {
             TransactionId = createdTransaction.Id
         };
+
+        var message = JsonSerializer.Serialize(response);
+
+        await queueService.PublishTransferAsync(message, createdTransaction.Id.ToString());
+
+        return response;
     }
 }
 
