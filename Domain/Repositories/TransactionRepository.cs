@@ -3,10 +3,12 @@ using api.Domain.Models;
 
 namespace api.Domain.Repositories;
 
-public class CreateDeposit
-{
-    public Guid UserId { get; set; }
-    public Guid BankId { get; set; }
+public class CreateTransaction
+{   
+    public Guid UserOriginId { get; set; }
+    public Guid UserDestinationId { get; set; }
+    public Guid BankOriginId { get; set; }
+    public Guid BankDestinationId { get; set; }    
     public int Value { get; set; }
     public string? Description { get; set; }
     public TransactionTypeEnum TransactionType { get; set; }
@@ -21,7 +23,7 @@ public class UpdateDeposit
 }
 public interface ITransactionRepository
 {
-    Task<TransactionModel> Create(CreateDeposit deposit);
+    Task<TransactionModel> Create(CreateTransaction deposit);
     Task<TransactionModel?> GetById(Guid transactionId);
     Task Update(UpdateDeposit data);
 

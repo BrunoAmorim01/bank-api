@@ -9,14 +9,14 @@ public class TransactionRepository(PostgressDbContext dbContext) : ITransactionR
 {
 
 
-    public async Task<TransactionModel> Create(CreateDeposit deposit)
+    public async Task<TransactionModel> Create(CreateTransaction deposit)
     {
         var transaction = new Transaction
         {
-            UserOriginId = deposit.UserId,
-            UserDestinationId = deposit.UserId,
-            BankOriginId = deposit.BankId,
-            BankDestinationId = deposit.BankId,
+            UserOriginId = deposit.UserOriginId,
+            UserDestinationId = deposit.UserDestinationId,
+            BankOriginId = deposit.BankOriginId,
+            BankDestinationId = deposit.BankDestinationId,
             Value = deposit.Value,
             Description = deposit.Description,
             TransactionType = deposit.TransactionType,
