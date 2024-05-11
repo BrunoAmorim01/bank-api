@@ -22,6 +22,23 @@ public class UserRepository(PostgressDbContext dbContext) : IUserRepository
 
     }
 
+    public Task<User?> Find(FindRequest request)
+    {
+        var query = dbContext.Users.Include(u => u.Bank).AsQueryable();
+
+        if (!string.IsNullOrEmpty(request.Email))
+        {
+            query = query.Where(u => u.Email.Equals(request.Email));
+        }
+
+        if (!string.IsNullOrEmpty(request.AccountNumber) && !string.IsNullOrEmpty(request.AccountDigit))
+        {
+            query = query.Where(u => u.Bank.AccountNumber.Equals(request.AccountNumber) && u.Bank.AccountDigit.Equals(request.AccountDigit));
+        }
+
+        return query.Select(u => new User { Id = u.Id, Bank = new Bank { Id = u.Bank.Id } }).FirstOrDefaultAsync();
+    }
+
     public Task<User?> GetByEmail(string email)
     {
         return dbContext.Users
