@@ -58,11 +58,11 @@ public class CreateTransferUseCase(
             Value = (int)(toAccount.Amount * 100),
         };
 
-        await transactionRepository.Create(transaction);
+        var createdTransaction = await transactionRepository.Create(transaction);
 
         return new Response
         {
-            TransactionId = Guid.NewGuid()
+            TransactionId = createdTransaction.Id
         };
     }
 }
