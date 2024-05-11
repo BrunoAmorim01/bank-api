@@ -29,7 +29,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
+#pragma warning disable CS8604 // Possible null reference argument.
     serverOptions.Listen(IPAddress.Any, int.Parse(builder.Configuration.GetSection("Port").Value));
+#pragma warning restore CS8604 // Possible null reference argument.
 });
 
 builder.Services.AddControllers();
