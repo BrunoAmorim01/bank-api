@@ -55,6 +55,11 @@ public class ExceptionFilter(ILogger<ExceptionFilter> logger) : IExceptionFilter
                 context.HttpContext.Response.StatusCode = (int)HttpStatusCode.Conflict;
                 ResponseSimpleObject(context);
                 break;
+
+            case InsufficientBalanceException:
+                context.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                ResponseSimpleObject(context);
+                break;
         }
     }
 
