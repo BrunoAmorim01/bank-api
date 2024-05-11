@@ -9,7 +9,7 @@ namespace api.Infrastructure.Queues
 
         protected string QueueName { get; set; } = default!;
         protected int MaxMessages { get; set; } = 10;
-        protected int WaitDelayWhenNoMessages { get; set; } = 1;
+        protected int WaitDelayWhenNoMessages { get; set; } = 10;
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
