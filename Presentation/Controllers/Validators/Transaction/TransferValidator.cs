@@ -15,12 +15,14 @@ public class TransferValidator : AbstractValidator<TransferDto>
         .EmailAddress()
         .When(x => x.AccountDestination == null)     
         .NotEmpty()   
-        .WithMessage("Invalid email address");        
+        .WithMessage("Invalid email address");
 
+#pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
         RuleFor(x => x.AccountDestination)
         .SetValidator(new AccountValidator())        
         .When(x => string.IsNullOrEmpty(x.EmailDestination))
         .WithMessage("Invalid account destination");
+#pragma warning restore CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
     }
 
 }
