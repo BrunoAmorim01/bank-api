@@ -38,8 +38,6 @@ public class TransactionsController(
 
 
 
-
-#pragma warning disable CS8601 // Possible null reference assignment.
         var transferData = new TransferData
         {
             Amount = body.Amount,
@@ -50,10 +48,9 @@ public class TransactionsController(
                 AccountNumber = body.AccountDestination?.AccountNumber
             }
         };
-#pragma warning restore CS8601 // Possible null reference assignment.
 
         var response = await createTransferUseCase.Execute(new Guid(userIdClaim.Value), transferData);
 
-        return Ok();
+        return Created(string.Empty, response);
     }
 }
