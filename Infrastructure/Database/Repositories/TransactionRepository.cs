@@ -39,11 +39,14 @@ public class TransactionRepository(PostgressDbContext dbContext) : ITransactionR
     {
         var transaction = await dbContext.Transactions
         .Include(x => x.UserDestination)
+        .Include(x => x.UserOrigin)
         .Select(x => new TransactionModel
         {
             Id = x.Id,
             UserDestinationId = x.UserDestinationId,
             BankDestinationId = x.BankDestinationId,
+            BankOriginId = x.BankOriginId,
+            UserOriginId = x.UserOriginId,
             TransactionStatus = x.TransactionStatus,
             TransactionType = x.TransactionType,
             Value = x.Value,
@@ -52,6 +55,12 @@ public class TransactionRepository(PostgressDbContext dbContext) : ITransactionR
                 Id = x.UserDestination.Id,
                 Name = x.UserDestination.Name,
                 Email = x.UserDestination.Email
+            },
+            UserOrigin = new User
+            {
+                Id = x.UserOrigin.Id,
+                Name = x.UserOrigin.Name,
+                Email = x.UserOrigin.Email
             }
 
         }).FirstOrDefaultAsync(x => x.Id == transactionId);
@@ -62,26 +71,26 @@ public class TransactionRepository(PostgressDbContext dbContext) : ITransactionR
         }
 
 
-        var transactionModel = new TransactionModel
-        {
-            Id = transaction.Id,
-            UserDestinationId = transaction.UserDestinationId,
-            BankDestinationId = transaction.BankDestinationId,
-            TransactionStatus = transaction.TransactionStatus,
-            TransactionType = transaction.TransactionType,
-            Value = transaction.Value,
-            UserDestination = new User
-            {
-                Id = transaction.UserDestination.Id,
-                Name = transaction.UserDestination.Name,
-                Email = transaction.UserDestination.Email
-            }
-        };
+        // var transactionModel = new TransactionModel
+        // {
+        //     Id = transaction.Id,
+        //     UserDestinationId = transaction.UserDestinationId,
+        //     BankDestinationId = transaction.BankDestinationId,
+        //     TransactionStatus = transaction.TransactionStatus,
+        //     TransactionType = transaction.TransactionType,
+        //     Value = transaction.Value,
+        //     UserDestination = new User
+        //     {
+        //         Id = transaction.UserDestination.Id,
+        //         Name = transaction.UserDestination.Name,
+        //         Email = transaction.UserDestination.Email
+        //     }
+        // };
 
-        return transactionModel;
+        return transaction;
     }
 
-    public async Task Update(UpdateDeposit data)
+    public async Task Update(UpdateTransaction data)
     {
         await dbContext.Transactions.Where(x => x.Id == data.Id).ExecuteUpdateAsync(x => x.SetProperty(p => p.TransactionStatus, data.TransactionStatus));
     }

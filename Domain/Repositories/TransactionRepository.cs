@@ -16,7 +16,7 @@ public class CreateTransaction
 
 }
 
-public class UpdateDeposit
+public class UpdateTransaction
 {
     public required Guid Id { get; set; }
     public TransactionStatusEnum TransactionStatus { get; set; }
@@ -25,6 +25,6 @@ public interface ITransactionRepository
 {
     Task<TransactionModel> Create(CreateTransaction deposit);
     Task<TransactionModel?> GetById(Guid transactionId);
-    Task Update(UpdateDeposit data);
+    Task Update(UpdateTransaction data);
 
 }
