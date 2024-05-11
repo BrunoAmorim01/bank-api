@@ -9,6 +9,6 @@ public class TransferDto
 {
     public decimal Amount { get; set; }
     public string? EmailDestination { get; set; }
-    public AccountDto? AccountDestination { get; set; }
+    public required AccountDto AccountDestination { get; set; }
 
 }
