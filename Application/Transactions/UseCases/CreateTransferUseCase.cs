@@ -1,4 +1,5 @@
-﻿using api.Domain.Repositories;
+﻿using api.Domain.Enums;
+using api.Domain.Repositories;
 using api.Domain.Services;
 using api.Shared.Exceptions;
 
@@ -16,7 +17,6 @@ public class TransferData
     public required AccountTransfer AccountDestination { get; set; }
 
 }
-
 
 public class CreateTransferUseCase(
     ILogger<CreateDepositUseCase> logger,
@@ -38,13 +38,27 @@ public class CreateTransferUseCase(
         };
 
         var userDestination = await userRepository.Find(findRequest) ?? throw new NotFoundException("User not found");
-        
+
         var userOrigin = await userRepository.GetById(fromUser);
 
         if (userOrigin.Bank.Balance < toAccount.Amount * 100)
         {
             throw new InsufficientBalanceException();
         }
+
+        var transaction = new CreateTransaction
+        {
+            BankDestinationId = userDestination.Bank.Id,
+            BankOriginId = userOrigin.Bank.Id,
+            Description = $"Transfer to {userDestination.Name} -  Value: {toAccount.Amount}",
+            UserDestinationId = userDestination.Id,
+            UserOriginId = userOrigin.Id,
+            TransactionStatus = TransactionStatusEnum.Pending,
+            TransactionType = TransactionTypeEnum.Transfer,
+            Value = (int)(toAccount.Amount * 100),
+        };
+
+        await transactionRepository.Create(transaction);
 
         return new Response
         {
