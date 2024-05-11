@@ -2,8 +2,8 @@
 
 public class AccountDto
 {
-    public string? AccountDigit { get; set; }
-    public string? AccountNumber { get; set; }
+    public required string AccountDigit { get; set; }
+    public required string AccountNumber { get; set; }
 }
 public class TransferDto
 {
