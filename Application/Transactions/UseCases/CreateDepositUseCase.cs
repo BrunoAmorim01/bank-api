@@ -18,10 +18,13 @@ public class CreateDepositUseCase(ILogger<CreateDepositUseCase> logger, ITransac
 
         var user = await userRepository.GetById(userId);
 
-        var deposit = new CreateDeposit
+        var deposit = new CreateTransaction
         {
-            UserId = userId,
-            BankId = user.Bank.Id,
+            BankDestinationId = user.Bank.Id,
+            BankOriginId = user.Bank.Id,
+            Description = $"Deposit - Value: {amount}",
+            UserDestinationId = user.Id,
+            UserOriginId = user.Id,
             Value = Convert.ToInt32(Math.Round(amount * 100)),
             TransactionType = TransactionTypeEnum.Deposit,
             TransactionStatus = TransactionStatusEnum.Pending,
