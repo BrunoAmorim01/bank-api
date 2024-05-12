@@ -67,6 +67,7 @@ builder.Services.AddScoped<CreateDepositUseCase>();
 builder.Services.AddScoped<ProccessDepositUseCase>();
 builder.Services.AddScoped<CreateTransferUseCase>();
 builder.Services.AddScoped<ProccessTransferUseCase>();
+builder.Services.AddScoped<ListTransactionsUseCase>();
 
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
