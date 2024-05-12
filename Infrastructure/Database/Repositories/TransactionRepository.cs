@@ -71,16 +71,16 @@ public class TransactionRepository(PostgressDbContext dbContext) : ITransactionR
         return transaction;
     }
 
-    public async Task<TransactionModel[]> ListByUserId(Guid userId)
+    public async Task<TransactionModel[]> ListByUserId(Guid userId, FindQuery query)
     {
-        return await dbContext.Transactions
+        var queryContext = dbContext.Transactions
         .Include(x => x.UserDestination)
         .Include(x => x.UserOrigin)
         .Include(x => x.BankDestination)
         .Include(x => x.BankOrigin)
         .Select(x => new TransactionModel
         {
-            Id = x.Id,            
+            Id = x.Id,
             TransactionStatus = x.TransactionStatus,
             TransactionType = x.TransactionType,
             Value = x.Value,
@@ -91,7 +91,7 @@ public class TransactionRepository(PostgressDbContext dbContext) : ITransactionR
                 Name = x.UserDestination.Name,
                 Email = x.UserDestination.Email,
 
-             },
+            },
             UserOrigin = new User
             {
                 Id = x.UserOrigin.Id,
@@ -111,7 +111,18 @@ public class TransactionRepository(PostgressDbContext dbContext) : ITransactionR
                 AccountNumber = x.BankOrigin.AccountNumber,
             }
 
-        }).Where(x => x.UserDestination.Id.Equals (userId) || x.UserDestination.Id.Equals (userId)).ToArrayAsync();
+        })
+        .OrderByDescending(x => x.CreatedAt)
+        .Where(x => x.UserDestination.Id.Equals(userId) || x.UserDestination.Id.Equals(userId));
+
+        if (query.StartDate is not null && query.EndDate is not null)
+        {
+            DateTime startDate = new(query.StartDate.Value.Year, query.StartDate.Value.Month, query.StartDate.Value.Day, 0, 0, 0, DateTimeKind.Utc);
+            DateTime endDate = new(query.EndDate.Value.Year, query.EndDate.Value.Month, query.EndDate.Value.Day, 23, 59, 59, DateTimeKind.Utc);
+            queryContext = queryContext.Where(y => y.CreatedAt >= startDate && y.CreatedAt <= endDate);
+        }
+        
+        return await queryContext.ToArrayAsync();
     }
 
     public async Task Update(UpdateTransaction data)
