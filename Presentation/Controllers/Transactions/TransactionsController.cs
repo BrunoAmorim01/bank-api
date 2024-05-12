@@ -15,7 +15,8 @@ public class TransactionsController(
     IValidator<DepositDto> depositValidator,
     IValidator<TransferDto> transferValidator,
     CreateDepositUseCase createDepositUseCase,
-    CreateTransferUseCase createTransferUseCase
+    CreateTransferUseCase createTransferUseCase,
+    ListTransactionsUseCase listTransactionsUseCase
     ) : ControllerBase
 {
 
@@ -52,5 +53,13 @@ public class TransactionsController(
         var response = await createTransferUseCase.Execute(new Guid(userIdClaim.Value), transferData);
 
         return Created(string.Empty, response);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> ListTransactions()
+    {
+        var userIdClaim = User.Claims.First(c => c.Type == ClaimTypes.UserData);
+        var response = await listTransactionsUseCase.Execute(new Guid(userIdClaim.Value));
+        return Ok(response);
     }
 }
