@@ -3,13 +3,22 @@ using Microsoft.OpenApi.Extensions;
 
 namespace api.Application.Transactions;
 
+public class QueryParams
+{
+    public DateOnly StartDate { get; set; }
+    public DateOnly EndDate { get; set; }
+}
 public class ListTransactionsUseCase(
     ITransactionRepository transactionRepository
     )
 {
-    public async Task<Object[]> Execute(Guid userId)
+    public async Task<Object[]> Execute(Guid userId, QueryParams query)
     {
-        var transactions = await transactionRepository.ListByUserId(userId);
+        var transactions = await transactionRepository.ListByUserId(userId, new FindQuery
+        {
+            StartDate = query.StartDate,
+            EndDate = query.EndDate
+        });
 
         var response = transactions.Select(x => new
         {
