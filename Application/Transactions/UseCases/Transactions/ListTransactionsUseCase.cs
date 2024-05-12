@@ -1,4 +1,5 @@
 ﻿using api.Domain.Repositories;
+using Microsoft.OpenApi.Extensions;
 
 namespace api.Application.Transactions;
 
@@ -15,8 +16,8 @@ public class ListTransactionsUseCase(
             x.Id,
             x.CreatedAt,
             amount = x.Value / 100,
-            x.TransactionType,
-            x.TransactionStatus,
+            TransactionType = x.TransactionType.GetDisplayName().ToUpper(),
+            TransactionStatus = x.TransactionStatus.GetDisplayName().ToUpper(),
             BankDestination = new
             {
 
@@ -33,8 +34,8 @@ public class ListTransactionsUseCase(
                 x.UserDestination.Name,
             },
             UserOrigin = new
-            {                
-                x.UserOrigin.Name,                
+            {
+                x.UserOrigin.Name,
             }
         }).ToArray();
 
