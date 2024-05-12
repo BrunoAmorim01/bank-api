@@ -26,5 +26,6 @@ public interface ITransactionRepository
     Task<TransactionModel> Create(CreateTransaction deposit);
     Task<TransactionModel?> GetById(Guid transactionId);
     Task Update(UpdateTransaction data);
+    Task<TransactionModel[]> ListByUserId(Guid userId);
 
 }
