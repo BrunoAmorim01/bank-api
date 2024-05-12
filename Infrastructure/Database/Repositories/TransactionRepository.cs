@@ -112,8 +112,11 @@ public class TransactionRepository(PostgressDbContext dbContext) : ITransactionR
             }
 
         })
+        .Where(x => x.UserDestination.Id.Equals(userId) || x.UserDestination.Id.Equals(userId))
         .OrderByDescending(x => x.CreatedAt)
-        .Where(x => x.UserDestination.Id.Equals(userId) || x.UserDestination.Id.Equals(userId));
+        .Skip(query.Skip)
+        .Take(query.Take);
+
 
         if (query.StartDate is not null && query.EndDate is not null)
         {
@@ -121,7 +124,13 @@ public class TransactionRepository(PostgressDbContext dbContext) : ITransactionR
             DateTime endDate = new(query.EndDate.Value.Year, query.EndDate.Value.Month, query.EndDate.Value.Day, 23, 59, 59, DateTimeKind.Utc);
             queryContext = queryContext.Where(y => y.CreatedAt >= startDate && y.CreatedAt <= endDate);
         }
-        
+
+        if (query.TransactionType?.Length > 0)
+        {
+            queryContext = queryContext.Where(x => query.TransactionType.Contains(x.TransactionType));
+        }
+
+        Console.WriteLine(queryContext.ToQueryString());
         return await queryContext.ToArrayAsync();
     }
 
