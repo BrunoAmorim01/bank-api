@@ -55,6 +55,7 @@ namespace api.Infrastructure.Queues
                 {
 
                     LogError($"Error processing message: {ex.Message}");
+                    LogError($"StackTrace: {ex.StackTrace}");
                 }
 
             }

@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <Folder Include="Application/Banks/UseCases/" />
+    <Folder Include="Application/Transactions/UseCases/Deposits/" />
     <Folder Include="Infrastructure/Security/Hasher/" />
   </ItemGroup>
 
