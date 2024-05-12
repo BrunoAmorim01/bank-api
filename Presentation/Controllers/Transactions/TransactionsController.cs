@@ -56,10 +56,18 @@ public class TransactionsController(
     }
 
     [HttpGet]
-    public async Task<IActionResult> ListTransactions()
+    public async Task<IActionResult> ListTransactions([FromQuery] TransactionFindQueryDto query)
     {
         var userIdClaim = User.Claims.First(c => c.Type == ClaimTypes.UserData);
-        var response = await listTransactionsUseCase.Execute(new Guid(userIdClaim.Value));
+        var queryParams = new QueryParams
+        {
+            StartDate = query.StartDate,
+            EndDate = query.EndDate,
+        };
+
+        var response = await listTransactionsUseCase.Execute(new Guid(userIdClaim.Value), queryParams);
+
+
         return Ok(response);
     }
 }
