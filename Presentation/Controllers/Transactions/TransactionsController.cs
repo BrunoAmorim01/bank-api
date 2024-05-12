@@ -63,6 +63,9 @@ public class TransactionsController(
         {
             StartDate = query.StartDate,
             EndDate = query.EndDate,
+            Skip = query.Skip,
+            Take = query.Take,
+            TransactionType = query.TransactionType
         };
 
         var response = await listTransactionsUseCase.Execute(new Guid(userIdClaim.Value), queryParams);
