@@ -27,6 +27,7 @@ public class FindQuery
     public DateOnly? StartDate { get; set; }
     public DateOnly? EndDate { get; set; }
     public TransactionTypeEnum[]? TransactionType { get; set; }
+    public TransactionStatusEnum[]? TransactionStatus { get; set; }
     public int Skip { get; set; } = 0;
     public int Take { get; set; } = 10;
 

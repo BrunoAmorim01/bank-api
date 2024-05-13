@@ -10,8 +10,8 @@ public class QueryParams
     public DateOnly? EndDate { get; set; }
     public int Skip { get; set; } = 0;
     public int Take { get; set; } = 10;
-
     public TransactionTypeEnum[]? TransactionType { get; set; }
+    public TransactionStatusEnum[]? TransactionStatus { get; set; }
 
 }
 public class ListTransactionsUseCase(
@@ -26,7 +26,8 @@ public class ListTransactionsUseCase(
             EndDate = query.EndDate,
             Skip = query.Skip,
             Take = query.Take,
-            TransactionType = query.TransactionType
+            TransactionType = query.TransactionType,
+            TransactionStatus = query.TransactionStatus
         });
 
         var response = transactions.Select(x => new
