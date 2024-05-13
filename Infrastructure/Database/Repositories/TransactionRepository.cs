@@ -73,50 +73,48 @@ public class TransactionRepository(PostgressDbContext dbContext) : ITransactionR
 
     public async Task<TransactionModel[]> ListByUserId(Guid userId, FindQuery query)
     {
-        var queryContext = dbContext.Transactions
-        .Include(x => x.UserDestination)
-        .Include(x => x.UserOrigin)
-        .Include(x => x.BankDestination)
-        .Include(x => x.BankOrigin)
-        .Select(x => new TransactionModel
-        {
-            Id = x.Id,
-            TransactionStatus = x.TransactionStatus,
-            TransactionType = x.TransactionType,
-            Value = x.Value,
-            CreatedAt = x.CreatedAt,
-            UserDestination = new User
-            {
-                Id = x.UserDestination.Id,
-                Name = x.UserDestination.Name,
-                Email = x.UserDestination.Email,
-
-            },
-            UserOrigin = new User
-            {
-                Id = x.UserOrigin.Id,
-                Name = x.UserOrigin.Name,
-                Email = x.UserOrigin.Email
-            },
-            BankDestination = new Bank
-            {
-                Id = x.BankDestination.Id,
-                AccountDigit = x.BankDestination.AccountDigit,
-                AccountNumber = x.BankDestination.AccountNumber,
-            },
-            BankOrigin = new Bank
-            {
-                Id = x.BankOrigin.Id,
-                AccountDigit = x.BankOrigin.AccountDigit,
-                AccountNumber = x.BankOrigin.AccountNumber,
-            }
-
-        })
-        .Where(x => x.UserDestination.Id.Equals(userId) || x.UserDestination.Id.Equals(userId))
-        .OrderByDescending(x => x.CreatedAt)
-        .Skip(query.Skip)
-        .Take(query.Take);
-
+        var queryContext = from transaction in dbContext.Transactions
+                           join userDestination in dbContext.Users on transaction.UserDestinationId equals userDestination.Id into _userDestination
+                           from userDestination in _userDestination.DefaultIfEmpty()
+                           join bankDestination in dbContext.Banks on transaction.BankDestinationId equals bankDestination.Id into _bankDestination
+                           from bankDestination in _bankDestination.DefaultIfEmpty()
+                           join userOrigin in dbContext.Users on transaction.UserOriginId equals userOrigin.Id into _userOrigin
+                           from userOrigin in _userOrigin.DefaultIfEmpty()
+                           join bankOrigin in dbContext.Banks on transaction.BankOriginId equals bankOrigin.Id into _bankOrigin
+                           from bankOrigin in _bankOrigin.DefaultIfEmpty()
+                           where transaction.UserDestinationId == userId || transaction.UserOriginId == userId
+                           select new TransactionModel
+                           {
+                               Id = transaction.Id,
+                               CreatedAt = transaction.CreatedAt,
+                               Value = transaction.Value,
+                               TransactionType = transaction.TransactionType,
+                               TransactionStatus = transaction.TransactionStatus,
+                               UserDestination = new User
+                               {
+                                   Id = userDestination.Id,
+                                   Name = userDestination.Name,
+                                   Email = userDestination.Email
+                               },
+                               BankDestination = new Bank
+                               {
+                                   Id = bankDestination.Id,
+                                   AccountDigit = bankDestination.AccountDigit,
+                                   AccountNumber = bankDestination.AccountNumber
+                               },
+                               UserOrigin = new User
+                               {
+                                   Id = userOrigin.Id,
+                                   Name = userOrigin.Name,
+                                   Email = userOrigin.Email
+                               },
+                               BankOrigin = new Bank
+                               {
+                                   Id = bankOrigin.Id,
+                                   AccountDigit = bankOrigin.AccountDigit,
+                                   AccountNumber = bankOrigin.AccountNumber
+                               }
+                           };
 
         if (query.StartDate is not null && query.EndDate is not null)
         {
@@ -129,8 +127,9 @@ public class TransactionRepository(PostgressDbContext dbContext) : ITransactionR
         {
             queryContext = queryContext.Where(x => query.TransactionType.Contains(x.TransactionType));
         }
-
-        Console.WriteLine(queryContext.ToQueryString());
+       
+        queryContext = queryContext.Skip(query.Skip).Take(query.Take);
+        
         return await queryContext.ToArrayAsync();
     }
 
