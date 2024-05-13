@@ -127,6 +127,11 @@ public class TransactionRepository(PostgressDbContext dbContext) : ITransactionR
         {
             queryContext = queryContext.Where(x => query.TransactionType.Contains(x.TransactionType));
         }
+
+        if (query.TransactionStatus?.Length > 0)
+        {
+            queryContext = queryContext.Where(x => query.TransactionStatus.Contains(x.TransactionStatus));
+        }
        
         queryContext = queryContext.Skip(query.Skip).Take(query.Take);
         
