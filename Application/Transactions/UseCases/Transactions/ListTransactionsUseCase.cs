@@ -50,10 +50,12 @@ public class ListTransactionsUseCase(
             },
             UserDestination = new
             {
+                x.UserDestination.Id,
                 x.UserDestination.Name,
             },
             UserOrigin = new
             {
+                x.UserOrigin.Id,
                 x.UserOrigin.Name,
             }
         }).ToArray();
