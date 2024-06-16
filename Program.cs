@@ -23,6 +23,8 @@ using api.Infrastructure.Queues;
 using api.Infrastructure.AWS;
 using api.Infrastructure.Database;
 using System.Net;
+using api.Domain.Services.Pdf;
+using api.Infrastructure.Pdf;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -68,6 +70,7 @@ builder.Services.AddScoped<ProccessDepositUseCase>();
 builder.Services.AddScoped<CreateTransferUseCase>();
 builder.Services.AddScoped<ProccessTransferUseCase>();
 builder.Services.AddScoped<ListTransactionsUseCase>();
+builder.Services.AddScoped<ExportListTransactionsUseCase>();
 
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -79,6 +82,7 @@ builder.Services.AddScoped<IAuth, AuthService>();
 builder.Services.AddAWSService<IAmazonSimpleEmailService>();
 builder.Services.AddTransient<IHasher, HasherService>();
 builder.Services.AddScoped<IQueueService, SqsService>();
+builder.Services.AddScoped<IPdfService, PdfService>();
 
 
 builder.Services.AddLogging(builder => builder.AddConsole());
