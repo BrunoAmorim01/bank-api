@@ -1,6 +1,7 @@
 ﻿
 using System.Security.Claims;
 using api.Application.Transactions;
+using api.Application.Transactions.Interfaces;
 using api.Presentation.Controllers.Validators;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
@@ -16,10 +17,10 @@ public class TransactionsController(
     IValidator<TransferDto> transferValidator,
     CreateDepositUseCase createDepositUseCase,
     CreateTransferUseCase createTransferUseCase,
-    ListTransactionsUseCase listTransactionsUseCase
+    ListTransactionsUseCase listTransactionsUseCase,
+    ExportListTransactionsUseCase exportListTransactionsUseCase
     ) : ControllerBase
 {
-
     [HttpPost]
     [Route("deposit")]
     public async Task<IActionResult> CreateDeposit([FromBody] DepositDto body)
@@ -59,7 +60,7 @@ public class TransactionsController(
     public async Task<IActionResult> ListTransactions([FromQuery] TransactionFindQueryDto query)
     {
         var userIdClaim = User.Claims.First(c => c.Type == ClaimTypes.UserData);
-        var queryParams = new QueryParams
+        var queryParams = new TransactionsListRequest
         {
             StartDate = query.StartDate,
             EndDate = query.EndDate,
@@ -71,7 +72,25 @@ public class TransactionsController(
 
         var response = await listTransactionsUseCase.Execute(new Guid(userIdClaim.Value), queryParams);
 
-
         return Ok(response);
+    }
+
+    [HttpGet]
+    [Route("export")]
+    public async Task<IActionResult> ExportListTransactions([FromQuery] TransactionFindQueryDto query)
+    {
+        var userIdClaim = User.Claims.First(c => c.Type == ClaimTypes.UserData);
+        var queryParams = new TransactionsListRequest
+        {
+            StartDate = query.StartDate,
+            EndDate = query.EndDate,
+            TransactionType = query.TransactionType,
+            TransactionStatus = query.TransactionStatus
+        };
+
+        var response = await exportListTransactionsUseCase.Execute(new Guid(userIdClaim.Value), queryParams);
+        
+        return File(response, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "transactions.xlsx");
+        
     }
 }

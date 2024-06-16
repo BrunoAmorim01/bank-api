@@ -1,24 +1,14 @@
-﻿using api.Domain.Enums;
+﻿using api.Application.Transactions.Interfaces;
+using api.Domain.Enums;
 using api.Domain.Repositories;
 using Microsoft.OpenApi.Extensions;
 
 namespace api.Application.Transactions;
-
-public class QueryParams
-{
-    public DateOnly? StartDate { get; set; }
-    public DateOnly? EndDate { get; set; }
-    public int Skip { get; set; } = 0;
-    public int Take { get; set; } = 10;
-    public TransactionTypeEnum[]? TransactionType { get; set; }
-    public TransactionStatusEnum[]? TransactionStatus { get; set; }
-
-}
 public class ListTransactionsUseCase(
     ITransactionRepository transactionRepository
     )
 {
-    public async Task<Object[]> Execute(Guid userId, QueryParams query)
+    public async Task<object[]> Execute(Guid userId, TransactionsListRequest query)
     {
         var transactions = await transactionRepository.ListByUserId(userId, new FindQuery
         {
