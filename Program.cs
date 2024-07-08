@@ -77,7 +77,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IBankRepository, BankRepository>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 
-builder.Services.AddTransient<IEMailService, SesService>();
+//builder.Services.AddTransient<IEMailService, SesService>();
+builder.Services.AddTransient<IEMailService, MailerSendService>();
 builder.Services.AddScoped<IAuth, AuthService>();
 builder.Services.AddAWSService<IAmazonSimpleEmailService>();
 builder.Services.AddTransient<IHasher, HasherService>();
